@@ -14,20 +14,25 @@ type User = {
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+    // console.log(req.method)
     if(req.method === 'POST') {
 
-        const session = await getSession({ req })
+        const Session = await getSession({ req })
 
+        console.log('session-------------------------------------------------------------------------------', Session)
         const user = await fauna.query<User>(
             q.Get(
                 q.Match(
                     q.Index('user_by_email'),
-                    q.Casefold(session.user.email)
+                    q.Casefold(Session.user.email)
                 )
             )
         )
+        // console.log('user-------------------------------------------------------------------------------', user)
 
         let customerId = user.data.stripe_customer_id
+        // console.log('customerid-------------------------------------------------------------------------------', customerId)
+
 
         if(!customerId) {
             const stripeCustomer = await stripe.customers.create({
@@ -63,6 +68,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             success_url: process.env.STRIPE_SUCCESS_URL,
             cancel_url: process.env.STRIPE_CANCEL_URL
         })
+        // console.log('checkoutsession-------------------------------------------------------------------------------', stripeCheckoutSession)
 
         return res.status(200).json({sessionId: stripeCheckoutSession.id})
     } else {

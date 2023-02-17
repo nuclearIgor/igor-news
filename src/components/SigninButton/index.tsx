@@ -13,7 +13,7 @@ export const SignInButton = () => {
     return Session ? (
         <button className={styles.signInButton} onClick={() => signOut()}>
             <FaGithub color="#04D361"/>
-            {Session.user.name}
+            {Session.user?.name}
             <FiX color="#737380" className={styles.closeIcon}/>
         </button>
     ) : (

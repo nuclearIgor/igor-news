@@ -13,7 +13,7 @@ export async function saveSubscription(
            q.Get(
                q.Match(
                    q.Index('user_by_stripe_customer_id'),
-                   customerId
+                    customerId
                )
            )
        )
@@ -28,6 +28,10 @@ export async function saveSubscription(
         price_id: subscription.items.data[0].price.id,
     }
 
+    console.log(
+        'managesubscription ------------------------------------------------------------------------------------------',
+        subscriptionData
+    )
     if(create) {
         await fauna.query(
             q.Create(
